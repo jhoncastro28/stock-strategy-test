@@ -13,8 +13,10 @@
     "@types/chai": "^5.2.2",
     "@types/mocha": "^10.0.10",
     "@types/node": "^22.15.18",
+    "@types/sinon": "^10.0.20",
     "chai": "^5.2.0",
     "mocha": "^11.2.2",
+    "sinon": "^14.0.2",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.3"
   }
