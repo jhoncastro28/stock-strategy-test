@@ -29,7 +29,7 @@ console.log(`Nuevo stock: ${resultDecrease}`);
 console.log("\n> Intentando retirar más stock del disponible:");
 try {
     context.executeStockUpdate(resultDecrease, 10);
-} catch (error) {
+} catch (error: any) { // Añadimos ": any" aquí para indicar que el error podría ser de cualquier tipo
     console.log(`Error capturado: ${error.message}`);
 }
 
@@ -65,6 +65,6 @@ context.setStrategy(withAudit);
 try {
     // Esta operación debería desencadenar logs, notificaciones y registros de auditoría
     context.executeStockUpdate(50, 25);
-} catch (error) {
+} catch (error: any) { // Añadimos ": any" aquí también
     console.log(`Error en la operación combinada: ${error.message}`);
 }
