@@ -1,0 +1,74 @@
+@startuml Combined Implementation
+
+' Strategy Pattern
+interface StockUpdateStrategy {
+  +updateStock(currentStock: number, quantity: number): number
+  +getMovementType(): string
+  +validateOperation(currentStock: number, quantity: number): void
+}
+
+class StockIncreaseStrategy {
+  +getMovementType(): string
+  +validateOperation(currentStock: number, quantity: number): void
+  +updateStock(currentStock: number, quantity: number): number
+}
+
+class StockDecreaseStrategy {
+  +getMovementType(): string
+  +validateOperation(currentStock: number, quantity: number): void
+  +updateStock(currentStock: number, quantity: number): number
+}
+
+class InventoryContext {
+  -strategy: StockUpdateStrategy
+  +setStrategy(strategy: StockUpdateStrategy): void
+  +executeStockUpdate(currentStock: number, quantity: number): number
+  +getMovementType(): string
+}
+
+' Decorator Pattern
+interface ReportDecorator {
+  +getStrategy(): StockUpdateStrategy
+}
+
+abstract class BaseReportDecorator {
+  #strategy: StockUpdateStrategy
+  +constructor(strategy: StockUpdateStrategy)
+  +getStrategy(): StockUpdateStrategy
+  +updateStock(currentStock: number, quantity: number): number
+  +getMovementType(): string
+  +validateOperation(currentStock: number, quantity: number): void
+}
+
+class LoggingDecorator {
+  +updateStock(currentStock: number, quantity: number): number
+}
+
+class NotificationDecorator {
+  -notificationChannel: string
+  +constructor(strategy: StockUpdateStrategy, channel: string)
+  +updateStock(currentStock: number, quantity: number): number
+  -sendNotification(oldStock: number, change: number, newStock: number): void
+}
+
+class AuditDecorator {
+  -userId: string
+  +constructor(strategy: StockUpdateStrategy, userId: string)
+  +updateStock(currentStock: number, quantity: number): number
+}
+
+' Relaciones
+StockUpdateStrategy <|.. StockIncreaseStrategy
+StockUpdateStrategy <|.. StockDecreaseStrategy
+InventoryContext o-- StockUpdateStrategy
+
+StockUpdateStrategy <|.. BaseReportDecorator
+ReportDecorator <|.. BaseReportDecorator
+BaseReportDecorator <|-- LoggingDecorator
+BaseReportDecorator <|-- NotificationDecorator
+BaseReportDecorator <|-- AuditDecorator
+BaseReportDecorator o-- StockUpdateStrategy
+
+note "La combinación de Strategy y Decorator\npermite flexibilidad en las operaciones\nde inventario y extensión de funcionalidades" as N1
+
+@enduml

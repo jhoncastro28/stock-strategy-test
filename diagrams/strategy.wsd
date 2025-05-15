@@ -1,0 +1,34 @@
+@startuml Strategy Pattern
+
+interface StockUpdateStrategy {
+  +updateStock(currentStock: number, quantity: number): number
+  +getMovementType(): string
+  +validateOperation(currentStock: number, quantity: number): void
+}
+
+class StockIncreaseStrategy {
+  +getMovementType(): string
+  +validateOperation(currentStock: number, quantity: number): void
+  +updateStock(currentStock: number, quantity: number): number
+}
+
+class StockDecreaseStrategy {
+  +getMovementType(): string
+  +validateOperation(currentStock: number, quantity: number): void
+  +updateStock(currentStock: number, quantity: number): number
+}
+
+class InventoryContext {
+  -strategy: StockUpdateStrategy
+  +setStrategy(strategy: StockUpdateStrategy): void
+  +executeStockUpdate(currentStock: number, quantity: number): number
+  +getMovementType(): string
+}
+
+StockUpdateStrategy <|.. StockIncreaseStrategy
+StockUpdateStrategy <|.. StockDecreaseStrategy
+InventoryContext o-- StockUpdateStrategy : -strategy >
+
+note "El patrón Strategy permite encapsular algoritmos\ndiferentes y hacerlos intercambiables en tiempo de ejecución" as N1
+
+@enduml

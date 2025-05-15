@@ -1,0 +1,43 @@
+@startuml Sequence Diagram
+
+actor Client
+participant "context:InventoryContext" as Context
+participant "baseStrategy:StockUpdateStrategy" as BaseStrategy
+participant "withLogging:LoggingDecorator" as LoggingDecorator
+participant "withNotification:NotificationDecorator" as NotificationDecorator
+participant "withAudit:AuditDecorator" as AuditDecorator
+
+Client -> Context : setStrategy(withAudit)
+Client -> Context : executeStockUpdate(50, 25)
+Context -> AuditDecorator : validateOperation(50, 25)
+AuditDecorator -> NotificationDecorator : validateOperation(50, 25)
+NotificationDecorator -> LoggingDecorator : validateOperation(50, 25)
+LoggingDecorator -> BaseStrategy : validateOperation(50, 25)
+BaseStrategy --> LoggingDecorator : validation complete
+LoggingDecorator --> NotificationDecorator : validation complete 
+NotificationDecorator --> AuditDecorator : validation complete
+AuditDecorator --> Context : validation complete
+
+Context -> AuditDecorator : updateStock(50, 25)
+activate AuditDecorator
+AuditDecorator -> NotificationDecorator : updateStock(50, 25)
+activate NotificationDecorator
+NotificationDecorator -> LoggingDecorator : updateStock(50, 25)
+activate LoggingDecorator
+LoggingDecorator -> BaseStrategy : updateStock(50, 25)
+activate BaseStrategy
+BaseStrategy --> LoggingDecorator : return 25
+deactivate BaseStrategy
+LoggingDecorator -> LoggingDecorator : log operations
+LoggingDecorator --> NotificationDecorator : return 25
+deactivate LoggingDecorator
+NotificationDecorator -> NotificationDecorator : send notification
+NotificationDecorator --> AuditDecorator : return 25
+deactivate NotificationDecorator
+AuditDecorator -> AuditDecorator : record audit information
+AuditDecorator --> Context : return 25
+deactivate AuditDecorator
+
+Context --> Client : return 25
+
+@enduml

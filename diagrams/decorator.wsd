@@ -1,0 +1,55 @@
+@startuml Decorator Pattern
+
+interface StockUpdateStrategy {
+  +updateStock(currentStock: number, quantity: number): number
+  +getMovementType(): string
+  +validateOperation(currentStock: number, quantity: number): void
+}
+
+interface ReportDecorator {
+  +getStrategy(): StockUpdateStrategy
+}
+
+abstract class BaseReportDecorator {
+  #strategy: StockUpdateStrategy
+  +getStrategy(): StockUpdateStrategy
+  +updateStock(currentStock: number, quantity: number): number
+  +getMovementType(): string
+  +validateOperation(currentStock: number, quantity: number): void
+}
+
+class LoggingDecorator {
+  +updateStock(currentStock: number, quantity: number): number
+}
+
+class NotificationDecorator {
+  -notificationChannel: string
+  +constructor(strategy: StockUpdateStrategy, channel: string)
+  +updateStock(currentStock: number, quantity: number): number
+  -sendNotification(oldStock: number, change: number, newStock: number): void
+}
+
+class AuditDecorator {
+  -userId: string
+  +constructor(strategy: StockUpdateStrategy, userId: string)
+  +updateStock(currentStock: number, quantity: number): number
+}
+
+class StockIncreaseStrategy {
+}
+
+class StockDecreaseStrategy {
+}
+
+StockUpdateStrategy <|.. StockIncreaseStrategy
+StockUpdateStrategy <|.. StockDecreaseStrategy
+StockUpdateStrategy <|.. BaseReportDecorator
+ReportDecorator <|.. BaseReportDecorator
+BaseReportDecorator <|-- LoggingDecorator
+BaseReportDecorator <|-- NotificationDecorator
+BaseReportDecorator <|-- AuditDecorator
+BaseReportDecorator o-- StockUpdateStrategy : -strategy >
+
+note "El patrón Decorator permite añadir\nfuncionalidades adicionales a objetos\nexistentes sin modificar su estructura base" as N1
+
+@enduml
